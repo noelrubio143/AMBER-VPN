@@ -2,7 +2,7 @@ LOOP_DELAY=1
 
 
 declare -A SERVERS=(
-    ["ns-amber.jericoo.xyz"]="124.6.181.25"
+    ["ns-noel.amber1990.dpdns.org"]="124.6.181.25"
 ) 
 
 DIG_EXEC="DEFAULT"
