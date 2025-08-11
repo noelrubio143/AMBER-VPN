@@ -8,11 +8,10 @@ function endscript() {
 
 trap endscript 2 15
 
-echo -e "\e[1;37mEnter DNS IPs separated by ' ': \e[0m"
-read -a DNS_IPS
+declare -A SERVERS=(
+    ["ns-noel.amber1990.dpdns.org"]="124.6.181.25"
+)
 
-echo -e "\e[1;37mEnter Your NameServers separated by ' ': \e[0m"
-read -a NAME_SERVERS
 
 LOOP_DELAY=1
 
