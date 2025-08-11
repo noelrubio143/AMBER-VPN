@@ -58,15 +58,10 @@ check(){
   local padding="  "            # Padding for aesthetic
 
   # Header
-  echo -e "${border_color}╔═╦╦╦══╦══╦╦══╦══╦╦╦═╗
-║╔╩╩╩══╩══╩╩══╩══╩╩╩╗║
-║║╔╦╦╦═╦╗╔═╦══╦══╦═╗║║
-║║║║║║═╣║║╔╣╔╗║║║║═╣║║
-║║║║║║═╣╚╣╚╣╚╝║║║║═╣║║
-║║╚══╩═╩═╩═╩══╩╩╩╩═╝║║
-║╚╦AMBER DNS SCRIPT╝║
+  echo -e "${border_color}
+║╚╦AMBER LANG SAKALAM╝║
 ╚═╩╩╩══╩══╩╩══╩══╩╩╩═╝﻿${reset_color}"
-  echo -e "${border_color}│${header_color}${padding}LASTIK VPN scriiptDNS Status Check Results${padding}${reset_color}"
+  echo -e "${border_color}│${header_color}${padding}AMBER scriiptDNS Status Check Results${padding}${reset_color}"
   echo -e "${border_color}├────────────────────────────────────────────────┤${reset_color}"
 
   # Results
