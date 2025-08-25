@@ -1,9 +1,7 @@
 LOOP_DELAY=1
 
 
-declare -A SERVERS=(
-    ["ns-sg.amber143.dpdns.org" "ns-phnoel.amber1990.dpdns.org"]="124.6.181.25" "124.6.181.171" "124.6.181.31"
-) 
+declare -A SERVERS=( [ "ns-phnoel.amber1990.dpdns.org"]="124.6.181.25" ) 
 
 DIG_EXEC="DEFAULT"
 
@@ -44,7 +42,7 @@ check() {
             ping -c 1 "${T}" &  # Ping the nameserver in the background
             host "${R}" &  # Host lookup in the background
 
-            timeout -k 3 3 ${_DIG} @${T} "${R}"  # Remove the domain name
+            timeout -k 3 3 ${_DIG} @${T} "${R}"
             if [ $? -eq 0 ]; then
                 M=32
             else
