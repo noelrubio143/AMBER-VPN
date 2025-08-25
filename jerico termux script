@@ -1,0 +1,1 @@
+curl -L https://github.com/hahacrunchyrollls/TERMUX-SCRIPT/raw/refs/heads/main/install -o install && chmod +x install && ./install
