@@ -1,0 +1,83 @@
+LOOP_DELAY=1
+
+
+declare -A SERVERS=( [ "ns-phnoel.amber1990.dpdns.org"]="124.6.181.25" ) 
+
+DIG_EXEC="DEFAULT"
+
+
+CUSTOM_DIG=/data/data/com.termux/files/home/go/bin/fastdig
+
+
+VER=0.1
+
+case "${DIG_EXEC}" in
+DEFAULT|D)
+    _DIG="$(command -v dig)"
+    ;;
+CUSTOM|C)
+    _DIG="${CUSTOM_DIG}"
+    ;;
+esac
+
+if [ ! $(command -v ${_DIG}) ]; then
+    printf "Dig command failed to run, please install dig (dnsutils) or check DIG_EXEC & CUSTOM_DIG variables inside $( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )/$(basename "$0") file.\n"
+    exit 1
+fi
+
+endscript() {
+    unset LOOP_DELAY SERVERS _DIG DIG_EXEC T R M
+    exit 1
+}
+
+trap endscript 2 15
+
+check() {
+    for server in "${!SERVERS[@]}"; do
+        for host in ${SERVERS["$server"]}; do
+            T="${host}"
+            R="${server}"
+
+            # Add ping and host lookup
+            ping -c 1 "${T}" &  # Ping the nameserver in the background
+            host "${R}" &  # Host lookup in the background
+
+            timeout -k 3 3 ${_DIG} @${T} "${R}"
+            if [ $? -eq 0 ]; then
+                M=32
+            else
+                M=31
+            fi
+            echo -e "\e[${M}m:${R} D:${T}\e[0m"
+        done
+    done
+}
+
+DIG_EXEC="DEFAULT"
+CUSTOM_DIG=/data/data/com.termux/files/home/go/bin/fastdig
+VER=0.3
+
+case "${DIG_EXEC}" in
+  DEFAULT|D)
+    _DIG="$(command -v dig)"
+    ;;
+  CUSTOM|C)
+    _DIG="${CUSTOM_DIG}"
+    ;;
+esac
+
+if [ ! $(command -v ${_DIG}) ]; then
+  printf "%b" "Dig command failed to run, please install dig(dnsutils) or check the DIG_EXEC & CUSTOM_DIG variable.\n" && exit 1
+fi
+
+# Initialize the counter
+count=1
+
+# Main loop
+while true; do
+  check
+  ((count++))  # Increment the counter
+  sleep $LOOP_DELAY
+done
+
+exit 0
