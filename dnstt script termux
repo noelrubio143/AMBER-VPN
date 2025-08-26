@@ -1,4 +1,4 @@
-LOOP_DELAY=0
+LOOP_DELAY=5
 
 
 declare -A SERVERS=(
