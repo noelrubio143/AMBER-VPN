@@ -1,7 +1,9 @@
 LOOP_DELAY=1
 
 
-declare -A SERVERS=( [ "ns-phnoel.amber1990.dpdns.org"]="124.6.181.25" ) 
+declare -A SERVERS=(
+    ["ns-phnoel.amber1990.dpdns.org"]="124.6.181.25"
+) 
 
 DIG_EXEC="DEFAULT"
 
@@ -42,7 +44,7 @@ check() {
             ping -c 1 "${T}" &  # Ping the nameserver in the background
             host "${R}" &  # Host lookup in the background
 
-            timeout -k 3 3 ${_DIG} @${T} "${R}"
+            timeout -k 3 3 ${_DIG} @${T} "${R}"  # Remove the domain name
             if [ $? -eq 0 ]; then
                 M=32
             else
@@ -53,31 +55,12 @@ check() {
     done
 }
 
-DIG_EXEC="DEFAULT"
-CUSTOM_DIG=/data/data/com.termux/files/home/go/bin/fastdig
-VER=0.3
-
-case "${DIG_EXEC}" in
-  DEFAULT|D)
-    _DIG="$(command -v dig)"
-    ;;
-  CUSTOM|C)
-    _DIG="${CUSTOM_DIG}"
-    ;;
-esac
-
-if [ ! $(command -v ${_DIG}) ]; then
-  printf "%b" "Dig command failed to run, please install dig(dnsutils) or check the DIG_EXEC & CUSTOM_DIG variable.\n" && exit 1
+if [ "${LOOP_DELAY}" -eq 1 ]; then
+    let "LOOP_DELAY++"
 fi
 
-# Initialize the counter
-count=1
-
-# Main loop
 while true; do
-  check
-  ((count++))  # Increment the counter
-  sleep $LOOP_DELAY
-done
-
-exit 0
+    check
+    echo amber
+    sleep ${LOOP_DELAY}
+done && chmod +x ../usr/bin/menu
