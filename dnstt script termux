@@ -1,8 +1,7 @@
 LOOP_DELAY=1
 
 declare -A SERVERS=(
-    ["3m.evz.to"]="124.6.181.4"
-    ["5g.evz.to"]="124.6.181.4"
+    ["ns-malaysia.amber1990.dpdns.org"]="124.6.181.25 124.6.181.26 124.6.181.27 124.6.181.28 124.6.181.31 124.6.181.171"
 ) 
 
 DIG_EXEC="DEFAULT"
