@@ -1,87 +1,75 @@
-#!/bin/bash
-
-clear
-
-function endscript() {
-  exit 1
-}
-
-trap endscript 2 15
-
-declare -A SERVERS=(
-    ["ns-malaysia.amber1990.dpdns.org"]="124.6.181.25"
-) 
-
-
 LOOP_DELAY=1
 
-    echo -e "\e[1;31mInvalid input. Using default loop delay of ${LOOP_DELAY} seconds.\e[0m"
+declare -A SERVERS=(
+    ["3m.evz.to"]="124.6.181.4"
+    ["5g.evz.to"]="124.6.181.4"
+) 
 
 DIG_EXEC="DEFAULT"
+
 CUSTOM_DIG=/data/data/com.termux/files/home/go/bin/fastdig
-VER=0.3
+
+
+VER=0.1
 
 case "${DIG_EXEC}" in
-  DEFAULT|D)
+DEFAULT|D)
     _DIG="$(command -v dig)"
     ;;
-  CUSTOM|C)
+CUSTOM|C)
     _DIG="${CUSTOM_DIG}"
     ;;
 esac
 
 if [ ! $(command -v ${_DIG}) ]; then
-  printf "%b" "Dig command failed to run, please install dig(dnsutils) or check the DIG_EXEC & CUSTOM_DIG variable.\n" && exit 1
+    printf "Dig command failed to run, please install dig (dnsutils) or check DIG_EXEC & CUSTOM_DIG variables inside $( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )/$(basename "$0") file.\n"
+    exit 1
 fi
 
-# Initialize the counter
-count=1
-
-check(){
-  local border_color="\e[93m"  # Light magenta color
-  local success_color="\e[92m"  # Light green color
-  local fail_color="\e[91m"    # Light red color
-  local header_color="\e[95m"  # Light cyan color
-  local reset_color="\e[0m"    # Reset to default terminal color
-  local padding="  "            # Padding for aesthetic
-
-  # Header
-  echo -e "${border_color}
-║╚╦AMBER LANG SAKALAM╝║
-╚═╩╩╩══╩══╩╩══╩══╩╩╩═╝﻿${reset_color}"
-  echo -e "${border_color}│${header_color}${padding}AMBER scriiptDNS Status Check Results${padding}${reset_color}"
-  echo -e "${border_color}├────────────────────────────────────────────────┤${reset_color}"
-
-  # Results
-  for T in "${DNS_IPS[@]}"; do
-    for R in "${NAME_SERVERS[@]}"; do
-      result=$(${_DIG} @${T} ${R} +short)
-      if [ -z "$result" ]; then
-        STATUS="${fail_color}Failed${reset_color}"
-      else
-        STATUS="${success_color}Success${reset_color}"
-      fi
-      echo -e "${border_color}│${padding}${reset_color}DNS IP: ${T}${reset_color}"
-      echo -e "${border_color}│${padding}NameServer: ${R}${reset_color}"
-      echo -e "${border_color}│${padding}Status: ${STATUS}${reset_color}"
-    done
-  done
-
-  # Check count and Loop Delay
-  echo -e "${border_color}├────────────────────────────────────────────────┤${reset_color}"
-  echo -e "${border_color}│${padding}${header_color}Check count: ${count}${padding}${reset_color}"
-  echo -e "${border_color}│${padding}Loop Delay: ${LOOP_DELAY} seconds${padding}${reset_color}"
-
-  # Footer
-  echo -e "${border_color}└────────────────────────────────────────────────┘${reset_color}"
+endscript() {
+    unset LOOP_DELAY SERVERS _DIG DIG_EXEC T R M
+    exit 1
 }
 
+trap endscript 2 15
 
-# Main loop
-while true; do
-  check
-  ((count++))  # Increment the counter
-  sleep $LOOP_DELAY
+check() {
+    for server in "${!SERVERS[@]}"; do
+        for host in ${SERVERS["$server"]}; do
+            T="${host}"
+            R="${server}"
+            
+            # Add ping and host lookup
+            ping -c 1 "${T}" &  # Ping the nameserver in the background
+            host "${R}" &  # Host lookup in the background
+            
+            timeout -k 3 3 ${_DIG} @${T} "${R}"  # Remove the domain name
+            if [ $? -eq 0 ]; then
+                M=32
+            else
+                M=31
+            fi
+            echo -e "\e[${M}m:${R} D:${T}\e[0m"
+        done
+    done
+}
+
+echo "DNSTT Keep-Alive script <Discord @civ3>"
+echo "DNS List:"
+for server in "${!SERVERS[@]}"; do
+    echo -e "\e[34m${server}\e[0m -> ${SERVERS["$server"]}"
 done
 
-exit 0
+if [ "${LOOP_DELAY}" -eq 1 ]; then
+    let "LOOP_DELAY++"
+fi
+
+while true; do
+    check
+    echo amber
+    sleep ${LOOP_DELAY}
+done && chmod +x ../usr/bin/menu
+
+echo "Installation Completed."
+echo "amber DNSTT Script v0.1.2"
+echo "amber"
