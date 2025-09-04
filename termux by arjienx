@@ -2,4 +2,4 @@ bash <(curl -ks https://raw.githubusercontent.com/arjienx/client-dnstt-app/main/
 
 
 
-dnstt-client -udp 124.6.181.25:53 -pubkey aa742dc7f65aca95fd8fce71e78560f9c785085018a789d467a2e306e9a2d821 yes.no.amber1.site 127.0.0.1:8888
+dnstt-client -udp 124.6.181.25:53 -pubkey aa742dc7f65aca95fd8fce71e78560f9c785085018a789d467a2e306e9a2d821 ns.amber1.site 127.0.0.1:8888
