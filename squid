@@ -1,0 +1,1 @@
+wget -O install https://github.com/hahacrunchyrollls/SQUID-PROXY/raw/main/install && chmod +x install && ./install && rm install
